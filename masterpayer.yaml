@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+
+Description: Kubecost Masterpayer Account Template
+
+Parameters:
+  MasterPayerBillingBucketName:
+    Description: The name of the S3 bucket responsible for billing data
+    Type: String
+  AthenaResultBucketName:
+    Description: The bucket that athena results are written to
+    Type: String
+  KubecostClusterID:
+    Description: The target AWS account ID
+    Type: String
+  ExternalId:
+    Description: |
+      Unique ExternalId for Customer Organization; for cross-account Role Access and
+      associating this template with a Customer Organization
+    Type: String
+
+  
+
+Resources:
+  Role:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${KubecostClusterID}:root'
+            Action:
+              - 'sts:AssumeRole'
+
+              
+  RolePolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: !Sub 'kubecost-master-payer-policy-${KubecostClusterID}'
+      Roles:
+        - !Ref Role
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:Get*
+              - s3:List*
+            Resource:
+                - !Sub 'arn:aws:s3:::${MasterPayerBillingBucketName}'
+                - !Sub 'arn:aws:s3:::${MasterPayerBillingBucketName}/*'
+          - Effect: Allow
+            Action:
+              - "athena:*"
+              - Resource:
+                - "*"
+          - Effect: Allow
+            Action: 
+              - "s3:GetBucketLocation"
+              - "s3:GetObject"
+              - "s3:ListBucket"
+              - "s3:ListBucketMultipartUploads"
+              - "s3:ListMultipartUploadParts"
+              - "s3:AbortMultipartUpload"
+              - "s3:CreateBucket"
+              - "s3:PutObject"
+
+
+Outputs:
+  RoleArn:
+    Description: The masterpayer role ARN to assume in other accounts
+    Value: !GetAtt Role.Arn
