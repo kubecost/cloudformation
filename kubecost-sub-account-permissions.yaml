@@ -4,6 +4,9 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Kubecost Masterpayer Account Template
 
 Parameters:
+  MasterPayerAccountID:
+    Description: Your AWS masterpayer account
+    Type: string
   SpotDataFeedBucketName:
     Description: The AWS account ID containing the cluster with kubecost.
     Type: String
@@ -26,6 +29,15 @@ Resources:
                 - 'ec2.amazonaws.com'
             Action:
               - 'sts:AssumeRole'
+  AssumeRolePolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Sid: AssumeRoleInMasterPayer
+          Effect: Allow
+          Action: 'sts:AssumeRole'
+          Resource: "arn:aws:iam::${MasterPayerAccountID}:role/KubecostRole-${AWS::AccountId}
 
   SpotFeedPolicy:
     Type: 'AWS::IAM::Policy'
