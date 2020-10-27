@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+
+Description: Kubecost Masterpayer Account Template
+
+Parameters:
+  SpotDataFeedBucketName:
+    Description: The AWS account ID containing the cluster with kubecost.
+    Type: String
+  
+Resources:
+  KubecostUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: 'KubecostUser'
+  KubecostRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'KubecostRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'ec2.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+
+  SpotFeedPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      Users:
+        - !Ref KubecostUser
+      Roles:
+        - !Ref KubecostRole
+      PolicyName: 'kubecost-spot-data-feed-access'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: SpotDataAccess
+          Effect: Allow
+          Action:
+          - s3:ListAllMyBuckets
+          - s3:ListBucket
+          - s3:HeadBucket
+          - s3:HeadObject
+          - s3:List*
+          - s3:Get*
+          Resource: "*"

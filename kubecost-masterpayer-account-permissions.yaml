@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+
+Description: Kubecost Masterpayer Account Template
+
+Parameters:
+  AthenaCURBucket:
+    Description: The bucket that athena results are written to
+    Type: String
+  KubecostClusterID:
+    Description: Amazon account running kubecost that requires access.
+    Type: CommaDelimitedList
+  
+Resources:
+  KubecostRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'KubecostRole-${KubecostClusterID}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${KubecostClusterID}:root'
+            Action:
+              - 'sts:AssumeRole'
+  AthenaPolicy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      Roles:
+        - !Ref KubecostRole
+      PolicyName: 'kubecost-athena-access-${KubecostClusterID}'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AthenaAccess
+          Effect: Allow
+          Action:
+          - athena:*
+          Resource:
+          - "*"
+        - Sid: ReadAccessToAthenaCurDataViaGlue
+          Effect: Allow
+          Action:
+          - glue:GetDatabase*
+          - glue:GetTable*
+          - glue:GetPartition*
+          - glue:GetUserDefinedFunction
+          - glue:BatchGetPartition
+          Resource:
+          - arn:aws:glue:*:*:catalog
+          - arn:aws:glue:*:*:database/athenacurcfn*
+          - arn:aws:glue:*:*:table/athenacurcfn*/*
+        - Sid: AthenaQueryResultsOutput
+          Effect: Allow
+          Action:
+          - s3:GetBucketLocation
+          - s3:GetObject
+          - s3:ListBucket
+          - s3:ListBucketMultipartUploads
+          - s3:ListMultipartUploadParts
+          - s3:AbortMultipartUpload
+          - s3:CreateBucket
+          - s3:PutObject
+          Resource:
+          - arn:aws:s3:::aws-athena-query-results-*
+        - Sid: S3ReadAccessToAwsBillingData
+          Effect: Allow
+          Action:
+          - s3:Get*
+          - s3:List*
+          Resource:
+          - arn:aws:s3:::${AthenaCURBucket}*
