@@ -9,7 +9,7 @@ Parameters:
     Type: String
   KubecostClusterID:
     Description: Amazon account running kubecost that requires access.
-    Type: CommaDelimitedList
+    Type: String
   
 Resources:
   KubecostRole:
