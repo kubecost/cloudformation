@@ -10,7 +10,10 @@ Parameters:
   SpotDataFeedBucketName:
     Description: The AWS account ID containing the cluster with kubecost.
     Type: String
-  
+
+Conditions:
+  HasSpotFeedBucketName: !Not [ !Equals [ !Ref SpotDataFeedBucketName, "" ] ]
+
 Resources:
   KubecostUser:
     Type: 'AWS::IAM::User'
@@ -37,10 +40,11 @@ Resources:
         - Sid: AssumeRoleInMasterPayer
           Effect: Allow
           Action: 'sts:AssumeRole'
-          Resource: "arn:aws:iam::${MasterPayerAccountID}:role/KubecostRole-${AWS::AccountId}
+          Resource: "arn:aws:iam::${MasterPayerAccountID}:role/KubecostRole-${AWS::AccountId}"
 
   SpotFeedPolicy:
     Type: 'AWS::IAM::Policy'
+    Condition: HasSpotFeedBucketName
     Properties:
       Users:
         - !Ref KubecostUser
