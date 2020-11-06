@@ -8,9 +8,12 @@ Parameters:
     Description: The bucket that athena results are written to
     Type: String
   SpotDataFeedBucketName:
-    Description: The AWS account ID containing the cluster with kubecost.
+    Description: Optional. The AWS account ID containing the cluster with kubecost.
     Type: String
-  
+
+Conditions:
+  HasSpotFeedBucketName: !Not [ !Equals [ !Ref SpotDataFeedBucketName, "" ] ]
+
 Resources:
   KubecostUser:
     Type: 'AWS::IAM::User'
@@ -32,6 +35,7 @@ Resources:
 
   SpotFeedPolicy:
     Type: 'AWS::IAM::Policy'
+    Condition: HasSpotFeedBucketName
     Properties:
       Users:
         - !Ref KubecostUser
