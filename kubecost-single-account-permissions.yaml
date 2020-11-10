@@ -103,4 +103,4 @@ Resources:
           - s3:Get*
           - s3:List*
           Resource:
-          - arn:aws:s3:::${AthenaCURBucket}*
+          - !Sub 'arn:aws:s3:::${AthenaCURBucket}*'

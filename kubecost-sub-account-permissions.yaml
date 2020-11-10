@@ -40,7 +40,7 @@ Resources:
         - Sid: AssumeRoleInMasterPayer
           Effect: Allow
           Action: 'sts:AssumeRole'
-          Resource: "arn:aws:iam::${MasterPayerAccountID}:role/KubecostRole-${AWS::AccountId}"
+          Resource: !Sub "arn:aws:iam::${MasterPayerAccountID}:role/KubecostRole-${AWS::AccountId}"
 
   SpotFeedPolicy:
     Type: 'AWS::IAM::Policy'

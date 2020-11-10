@@ -29,7 +29,7 @@ Resources:
     Properties:
       Roles:
         - !Ref KubecostRole
-      PolicyName: 'kubecost-athena-access-${KubecostClusterID}'
+      PolicyName: !Sub 'kubecost-athena-access-${KubecostClusterID}'
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -70,4 +70,4 @@ Resources:
           - s3:Get*
           - s3:List*
           Resource:
-          - arn:aws:s3:::${AthenaCURBucket}*
+          - !Sub 'arn:aws:s3:::${AthenaCURBucket}*'
