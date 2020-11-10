@@ -6,7 +6,7 @@ Description: Kubecost Sub-Account Template
 Parameters:
   MasterPayerAccountID:
     Description: Your AWS masterpayer account
-    Type: string
+    Type: String
   SpotDataFeedBucketName:
     Description: The AWS account ID containing the cluster with kubecost.
     Type: String
