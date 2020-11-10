@@ -35,6 +35,10 @@ Resources:
   AssumeRolePolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
+      Users:
+        - !Ref KubecostUser
+      Roles:
+        - !Ref KubecostRole
       PolicyDocument:
         Statement:
         - Sid: AssumeRoleInMasterPayer
