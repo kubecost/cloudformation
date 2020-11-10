@@ -10,7 +10,7 @@ Parameters:
   KubecostClusterID:
     Description: Amazon account running kubecost that requires access.
     Type: String
-  
+
 Resources:
   KubecostRole:
     Type: 'AWS::IAM::Role'
