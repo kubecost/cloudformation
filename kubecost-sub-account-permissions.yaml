@@ -39,6 +39,7 @@ Resources:
         - !Ref KubecostUser
       Roles:
         - !Ref KubecostRole
+      PolicyName: 'kubecost-assume-masterpayer'
       PolicyDocument:
         Statement:
         - Sid: AssumeRoleInMasterPayer
