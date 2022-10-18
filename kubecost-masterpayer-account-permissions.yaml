@@ -5,7 +5,7 @@ Description: Kubecost Masterpayer Account Template
 
 Parameters:
   AthenaCURBucket:
-    Description: The bucket that athena results are written to
+    Description: The bucket where the CUR is sent from the “Setting up the CUR” step.
     Type: String
   KubecostClusterID:
     Description: Amazon account running kubecost that requires access.
