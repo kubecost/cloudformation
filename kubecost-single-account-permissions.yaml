@@ -8,7 +8,7 @@ Parameters:
     Description: The bucket where the CUR is sent from the “Setting up the CUR” step.
     Type: String
   SpotDataFeedBucketName:
-    Description: Optional. The AWS account ID containing the cluster with kubecost.
+    Description: Optional. The bucket where the spot data feed is sent from the “Setting up the Spot Data feed” step.
     Type: String
 
 Conditions:
