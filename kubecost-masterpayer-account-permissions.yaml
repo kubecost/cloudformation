@@ -7,6 +7,9 @@ Parameters:
   AthenaCURBucket:
     Description: The bucket where the CUR is sent from the "Setting up the CUR" step. This is in the AWS console>Billing Dashboard>Cost & usage reports>S3 Bucket for the daily report. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations#step-1-setting-up-the-cur
     Type: String
+  AthenaQueryResultsBucket:
+    Description: The bucket where the Athena query output is sent. This is under Athena>Query editor>Settings. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations#step-2-setting-up-athena
+    Type: String
   KubecostClusterID:
     Description: Amazon account running kubecost that requires access.
     Type: String
@@ -51,6 +54,13 @@ Resources:
           - arn:aws:glue:*:*:catalog
           - arn:aws:glue:*:*:database/athenacurcfn*
           - arn:aws:glue:*:*:table/athenacurcfn*/*
+        - Sid: AthenaQueryBucketAccess
+          Effect: Allow
+          Action:
+          - s3:GetBucketLocation
+          - s3:ListBucket
+          Resource:
+          - !Sub 'arn:aws:s3:::${AthenaQueryResultsBucket}'
         - Sid: AthenaQueryResultsOutput
           Effect: Allow
           Action:
@@ -63,14 +73,20 @@ Resources:
           - s3:CreateBucket
           - s3:PutObject
           Resource:
-          - arn:aws:s3:::aws-athena-query-results-*
+          - !Sub 'arn:aws:s3:::${AthenaQueryResultsBucket}/*'
+        - Sid: S3AccessToBillingDataBucket
+          Effect: Allow
+          Action:
+          - s3:GetBucketLocation
+          - s3:ListBucket
+          Resource:
+          - !Sub 'arn:aws:s3:::${AthenaCURBucket}'
         - Sid: S3ReadAccessToAwsBillingData
           Effect: Allow
           Action:
-          - s3:Get*
-          - s3:List*
+          - s3:GetObject
           Resource:
-          - !Sub 'arn:aws:s3:::${AthenaCURBucket}*'
+          - !Sub 'arn:aws:s3:::${AthenaCURBucket}/*'
         - Sid: ReadAccessToAccountTags
           Effect: Allow
           Action:

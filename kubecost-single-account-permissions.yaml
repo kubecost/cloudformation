@@ -7,6 +7,9 @@ Parameters:
   AthenaCURBucket:
     Description: The bucket where the CUR is sent from the "Setting up the CUR" step. This is in the AWS console>Billing Dashboard>Cost & usage reports>S3 Bucket for the daily report. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations#step-1-setting-up-the-cur
     Type: String
+  AthenaQueryResultsBucket:
+    Description: The bucket where the Athena query output is sent. This is under Athena>Query editor>Settings. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations#step-2-setting-up-athena
+    Type: String
   SpotDataFeedBucketName:
     Description: Optional- Kubecost uses actual billing for all cloud resources regardless of the spot feed being available. With the spot feed, near-term (48h) reports will use the spot rates. The bucket where the spot data feed is sent from the "Spot Data feed integration" step. This can be done at any time. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations/aws-spot-instances
     Type: String
@@ -45,17 +48,19 @@ Resources:
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
+        - Sid: SpotBucketAccess
+          Effect: Allow
+          Action:
+          - s3:GetBucketLocation
+          - s3:ListBucket
+          Resource:
+          - !Sub 'arn:aws:s3:::${SpotDataFeedBucketName}*'
         - Sid: SpotDataAccess
           Effect: Allow
           Action:
-          - s3:ListAllMyBuckets
-          - s3:ListBucket
-          - s3:HeadBucket
-          - s3:HeadObject
-          - s3:List*
-          - s3:Get*
+          - s3:Getobject
           Resource:
-          - !Sub 'arn:aws:s3:::${SpotDataFeedBucketName}*'
+          - !Sub 'arn:aws:s3:::${SpotDataFeedBucketName}/*'
   AthenaPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -85,6 +90,13 @@ Resources:
           - arn:aws:glue:*:*:catalog
           - arn:aws:glue:*:*:database/athenacurcfn*
           - arn:aws:glue:*:*:table/athenacurcfn*/*
+        - Sid: AthenaQueryBucketAccess
+          Effect: Allow
+          Action:
+          - s3:GetBucketLocation
+          - s3:ListBucket
+          Resource:
+          - !Sub 'arn:aws:s3:::${AthenaQueryResultsBucket}'
         - Sid: AthenaQueryResultsOutput
           Effect: Allow
           Action:
@@ -97,14 +109,20 @@ Resources:
           - s3:CreateBucket
           - s3:PutObject
           Resource:
-          - arn:aws:s3:::aws-athena-query-results-*
+          - !Sub 'arn:aws:s3:::${AthenaQueryResultsBucket}/*'
+        - Sid: S3AccessToBillingDataBucket
+          Effect: Allow
+          Action:
+          - s3:GetBucketLocation
+          - s3:ListBucket
+          Resource:
+          - !Sub 'arn:aws:s3:::${AthenaCURBucket}'
         - Sid: S3ReadAccessToAwsBillingData
           Effect: Allow
           Action:
-          - s3:Get*
-          - s3:List*
+          - s3:GetObject
           Resource:
-          - !Sub 'arn:aws:s3:::${AthenaCURBucket}*'
+          - !Sub 'arn:aws:s3:::${AthenaCURBucket}/*'
         - Sid: ReadAccessToAccountTags
           Effect: Allow
           Action:
