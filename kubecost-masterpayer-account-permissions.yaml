@@ -5,7 +5,7 @@ Description: Kubecost Masterpayer Account Template
 
 Parameters:
   AthenaCURBucket:
-    Description: The bucket where the CUR is sent from the “Setting up the CUR” step.
+    Description: The bucket where the CUR is sent from the "Setting up the CUR" step. This is in the AWS console>Billing Dashboard>Cost & usage reports>S3 Bucket for the daily report. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations#step-1-setting-up-the-cur
     Type: String
   KubecostClusterID:
     Description: Amazon account running kubecost that requires access.
@@ -76,5 +76,5 @@ Resources:
           Action:
           - organizations:ListAccounts
           - organizations:ListTagsForResource
-          Resource: 
+          Resource:
           - "*"
