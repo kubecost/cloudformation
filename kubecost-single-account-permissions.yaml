@@ -54,7 +54,8 @@ Resources:
           - s3:HeadObject
           - s3:List*
           - s3:Get*
-          Resource: "*"
+          Resource:
+          - !Sub 'arn:aws:s3:::${SpotDataFeedBucketName}*'
   AthenaPolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
@@ -110,4 +111,4 @@ Resources:
           - organizations:ListAccounts
           - organizations:ListTagsForResource
           Resource:
-          - !Sub 'arn:aws:s3:::${SpotDataFeedBucketName}*'
+          - "*"
