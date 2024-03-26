@@ -5,7 +5,7 @@ Description: Kubecost Masterpayer Account Template
 
 Parameters:
   AthenaCURBucket:
-    Description: The bucket where the CUR is sent from the "Setting up the CUR" step. This is in the AWS console>Billing Dashboard>Cost & usage reports>S3 Bucket for the daily report. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations#step-1-setting-up-the-cur
+    Description: The bucket where the CUR is sent from the _Setting up the CUR_ step. This is in the AWS console>Billing Dashboard>Cost & usage reports>S3 Bucket for the daily report. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations#step-1-setting-up-the-cur
     Type: String
   AthenaQueryResultsBucket:
     Description: The bucket where the Athena query output is sent. This is under Athena>Query editor>Settings. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations#step-2-setting-up-athena
