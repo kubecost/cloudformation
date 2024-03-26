@@ -8,7 +8,7 @@ Parameters:
     Description: Your AWS masterpayer account
     Type: String
   SpotDataFeedBucketName:
-    Description: Optional. The bucket where the spot data feed is sent from the “Setting up the Spot Data feed” step.
+    Description: Optional- Kubecost uses actual billing for all cloud resources regardless of the spot feed being available. With the spot feed, near-term (48h) reports will use the spot rates. The bucket where the spot data feed is sent from the _Spot Data feed integration_ step. This can be done at any time. https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations/aws-spot-instances
     Type: String
 
 Conditions:
@@ -68,4 +68,5 @@ Resources:
           - s3:HeadObject
           - s3:List*
           - s3:Get*
-          Resource: "*"
+          Resource:
+          - !Sub 'arn:aws:s3:::${SpotDataFeedBucketName}*'
