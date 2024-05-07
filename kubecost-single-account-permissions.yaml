@@ -103,7 +103,7 @@ Resources:
           - s3:Get*
           - s3:List*
           Resource:
-          - !Sub 'arn:aws:s3:::${AthenaCURBucket}*'
+          - !Sub 'arn:aws:s3:::${S3CURBucket}*'
         - Sid: ReadAccessToAccountTags
           Effect: Allow
           Action:
