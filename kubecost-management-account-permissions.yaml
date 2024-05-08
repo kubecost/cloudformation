@@ -4,8 +4,8 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Kubecost Masterpayer Account Template
 
 Parameters:
-  AthenaCURBucket:
-    Description: The bucket where the CUR is sent from the “Setting up the CUR” step.
+  S3CURBucket:
+    Description: The bucket created to receive CUR data upon CUR creation.
     Type: String
   KubecostClusterID:
     Description: Amazon account running kubecost that requires access.
@@ -70,7 +70,7 @@ Resources:
           - s3:Get*
           - s3:List*
           Resource:
-          - !Sub 'arn:aws:s3:::${AthenaCURBucket}*'
+          - !Sub 'arn:aws:s3:::${S3CURBucket}*'
         - Sid: ReadAccessToAccountTags
           Effect: Allow
           Action:

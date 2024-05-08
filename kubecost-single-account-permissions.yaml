@@ -1,14 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
 
-Description: Kubecost Masterpayer Account Template
+Description: Kubecost Management Account Template
 
 Parameters:
-  AthenaCURBucket:
-    Description: The bucket where the CUR is sent from the “Setting up the CUR” step.
+  S3CURBucket:
+    Description: The bucket created to receive CUR data upon CUR creation.
     Type: String
   SpotDataFeedBucketName:
-    Description: Optional. The bucket where the spot data feed is sent from the “Setting up the Spot Data feed” step.
+    Description: Optional. The bucket created to receive spot data feed.
     Type: String
 
 Conditions:
@@ -103,7 +103,7 @@ Resources:
           - s3:Get*
           - s3:List*
           Resource:
-          - !Sub 'arn:aws:s3:::${AthenaCURBucket}*'
+          - !Sub 'arn:aws:s3:::${S3CURBucket}*'
         - Sid: ReadAccessToAccountTags
           Effect: Allow
           Action:
