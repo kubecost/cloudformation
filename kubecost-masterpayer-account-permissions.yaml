@@ -5,7 +5,7 @@ Description: Kubecost Masterpayer Account Template
 
 Parameters:
   S3CURBucket:
-    Description: The bucket where the CUR is sent from the “Setting up the CUR” step.
+    Description: The bucket created to receive CUR data upon CUR creation.
     Type: String
   KubecostClusterID:
     Description: Amazon account running kubecost that requires access.
